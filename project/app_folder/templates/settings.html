@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+    {% block body %}
+
+    <div class="jumbotron">
+      <div class="container">
+        <h1 class="display-3">Account Settings</h1>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-sm">
+          <form class="form-signin" method="POST" action="/settings">
+            <h6 class="form-register-heading">Add Avalability</h6>
+            <small>Enter time in 24hour format. 9:00- 17:00</small>
+            <p>
+              {{ form.dates.label}}
+              <br>
+              {{ form.dates}}
+            </p>
+            <p>
+              {{ form.start.label }}<br>
+              {{ form.start }}
+            </p>
+            <p>
+              {{ form.end.label }}<br>
+              {{ form.end }}
+            </p>
+             <p>
+              {{ form.slotTime }}
+             </p>
+              <hr>
+            <button class = "btn btn-block btn-primary"  type="submit">Set</button>
+          </form>
+        </div>
+        <div class="col-sm">
+          <h6>Type <b>yes</b> if you want to get email conformation</h6>
+          <form class="form-signin" method="POST" action="/settings">
+            {{ emailNotification.emailConformation }}
+            <hr>
+            <button class = "btn btn-primary block" type="submit">Set</button>
+            
+    
+        </form>
+        </div>
+        <div class="col-sm">
+          <h6>Type <b>yes</b> if you want to delete your account</h6>
+          <form method="POST" action="/settings">
+            
+            {{ deleteform.yes }}
+            <br>
+            <hr>
+            <button class = "btn btn-danger block" type="submit">Delete Account</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endblock %}

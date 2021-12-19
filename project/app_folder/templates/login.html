@@ -1,0 +1,36 @@
+{% extends 'layout.html' %}
+
+    {% block body %}
+        <div class="container text-center">
+          <div class="container">
+            <div class="jumbotron text-center">
+                <h1 class="display-4">Welcome to Quber!</h1>
+              </div>
+              {% if error %}
+                <p class=error><strong>Error:</strong> {{ error }}
+            {% endif %}
+      <form  method = "POST" action="/login">
+        <h2>Please log in</h2>
+        {{ form.hidden_tag() }}
+          {{ form.username.label }} <br>
+          {{ form.username }} <br>
+
+          {{ form.password.label }} <br>
+          {{ form.password }} <br>
+
+          {{ form.remember.label }}
+          {{ form.remember }}<br>
+            <br>
+            <small>
+              <a href="/register">Don't have an account?</a>
+          </small>
+          <br>
+          <hr>
+        <button class="btn btn-primary" type="submit">Sign in</button>
+        
+
+      
+      </form>
+
+    </div> <!-- /container -->
+    {% endblock %}

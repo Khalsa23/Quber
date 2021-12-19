@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+    <meta charset='utf-8' />
+    <title>Quber</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="{{ url_for('static', filename='fullcalendar.min.css') }}" rel='stylesheet' />
+    <link href="{{ url_for('static', filename='fullcalendar.print.css') }}" rel='stylesheet' media='print' />
+    <script src="{{ url_for('static', filename='lib/moment.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='fullcalendar.min.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+
+            $('#calendar').fullCalendar({
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                },
+                
+                defaultDate: '2020-05-03',
+                editable: true,
+                eventLimit: true, // allow "more" link when too many events
+                events: {
+                    url: 'data',
+                    error: function() {
+                        $('#script-warning').show();
+                    }
+                },
+                loading: function(bool) {
+                    $('#loading').toggle(bool);
+                },
+                dayClick: function(date,jsEvent,view) {
+                    $.ajax({
+			type: "POST",
+			url: "{{ url_for('getSlots',userName=userName )}}",
+			data: JSON.stringify(date.format()) ,
+			contentType: "application/json; charset=utf-8",
+			dataType: "json",
+			success: function (data) {
+                $("#appointmentTime").empty();
+                for (var i = 0; i < data.slots.length; i++){
+                    $("#appointmentTime").append(
+                        $("<option></option>")
+                        .attr("value", data.slots[i])
+                        .text(data.slots[i])
+                    );
+            }
+						
+				}
+			})
+
+		}	
+                    });
+                });
+
+    </script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+            font-size: 14px;
+        }
+        #calendar {
+            float: left;
+            max-width: 700px;
+            margin: 70px auto;
+            padding: 0px 80px;
+        
+        }
+        #appoitnments {
+            margin-left: 100px;
+            margin-top: 50px;
+        }
+        .fc-day:hover{
+            background-color:lightskyblue!important;
+        }
+       
+    </style>
+    </head>
+    <body>
+
+        <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+            <h3 class="my-0 mr-md-auto font-weight-normal">Quber</h3>
+            <nav class="my-2 my-md-0 mr-md-3">
+              <a class="p-2 text-dark" href="/{{ userName }}">Set appoitnemnt</a>
+            </nav>
+            <a class="btn btn-outline-primary" href="/login">Creator Login</a>
+          </div>
+          {% with messages = get_flashed_messages() %}
+          {% if messages %}
+              <div class=flashes>
+              {% for message in messages %}
+              <div class="alert alert-warning" role="alert">
+                {{ message }}
+            </div>
+              {% endfor %}
+        </div>
+          {% endif %}
+      {% endwith %}
+        <div id='calendar'></div>
+        <div id="appoitnments">
+            {% block body %}
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm">
+                <form method="POST" action="/{{ userName }}">
+                    <h2>Appointments</h2>
+                    <p>
+                        Name - <b>{{ userName }}</b>
+                        <br>
+                    </p>
+                    <p id='selecteDate'></p>
+                    <p>
+                    
+                       {{ form.appointmentTime}}
+                        
+                    </p>
+            
+                    <p>
+                        {{ form.description.label }}<br>
+                        {{ form.description }}
+                    </p>
+        
+                    <p>
+                        {{ form.guestName.label }}<br>
+                        {{ form.guestName }}
+                    </p>
+                    <input type="submit">
+                    <!-- {{ form.submit() }} -->
+                </form>
+            </div>      
+            </div> <!-- /container -->
+            </div>
+            {% endblock %} 
+
+        </div>
+        
+    </body>
+</html>
